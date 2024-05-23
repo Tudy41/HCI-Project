@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MMVC</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <link  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    #loadingScreen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    #loadingBarContainer {
+      width: 80%;
+      height: 30px;
+      background-color: #D3D3D3;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    #loadingBar {
+      width: 0%;
+      height: 100%;
+      background-color: #50C878;
+    }
+
+    #loadingText {
+      color: black;
+      font-size: 18px;
+      position: absolute;
+      top: calc(50% - 40px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .fixed-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      visibility: hidden;
+      z-index: 999;
+    }
+
+    .fixed-button button {
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    .menu-top {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      visibility: hidden;
+      z-index: 999;
+    }
+
+    .menu-top button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .menu-top button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <script>
+    AFRAME.registerComponent('navigate', {
+      schema: { type: 'string' },
+      init: function () {
+        this.el.addEventListener('click', () => {
+          const target = this.data;
+          document.getElementById('menu').setAttribute('visible', target === 'menu');
+          document.getElementById('page1').setAttribute('visible', target === 'page1');
+          document.getElementById('sky').setAttribute('visible', target === 'page1');
+          const backButton = document.getElementById('back');
+          if (target === 'menu') {
+            backButton.setAttribute('visible', 'false');
+          } else {
+            backButton.setAttribute('visible', 'true');
+          }
+          const greenFloor = document.getElementById('greenFloor');
+          if (target === 'page1') {
+            greenFloor.setAttribute('visible', 'true');
+          } else {
+            greenFloor.setAttribute('visible', 'false');
+          }
+        });
+      }
+    });
+
+    window.addEventListener('load', () => {
+      let progress = 0;
+      const loadingBar = document.getElementById('loadingBar');
+      const loadingText = document.getElementById('loadingText');
+
+      function updateLoadingBar() {
+        progress += 1;
+        loadingBar.style.width = progress + '%';
+        loadingText.innerText = progress + '%';
+        if (progress < 100) {
+          requestAnimationFrame(updateLoadingBar);
+        } else {
+          document.getElementById('loadingScreen').style.display = 'none';
+          document.getElementById('menu').setAttribute('visible', 'true');
+        }
+      }
+
+      requestAnimationFrame(updateLoadingBar);
+      const page1 = document.getElementById('page1');
+      const redButton = document.getElementById('redButton');
+
+      page1.addEventListener('componentchanged', function (evt) {
+        if (evt.detail.name === 'visible') {
+          if (page1.getAttribute('visible') === false) {
+            redButton.style.visibility = 'hidden';
+          } else {
+            redButton.style.visibility = 'visible';
+          }
+        }
+      });
+
+      const buttons = document.querySelectorAll('.top-button');
+      let isMenuVisible = false;
+
+      redButton.addEventListener('click', () => {
+        isMenuVisible = !isMenuVisible;
+        buttons.forEach(button => {
+          button.setAttribute('visible', isMenuVisible);
+        });
+      });
+
+      const button1 = document.getElementById('button1');
+      const messageBox = document.getElementById('messageBoxVR');
+      let isMessageBoxVisible = false; 
+
+      button1.addEventListener('click', () => {
+        if (isMessageBoxVisible) {
+          messageBox.setAttribute('visible', 'false');
+          isMessageBoxVisible = false;
+        } else {
+          messageBox.setAttribute('visible', 'true');
+          isMessageBoxVisible = true;
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <a-scene>
+    <a-entity camera look-controls>
+      <a-entity cursor="fuse: true; fuseTimeout: 500" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
+      </a-entity>
+    </a-entity>
+
+    <div id="loadingScreen">
+      <div id="loadingBarContainer">
+        <div id="loadingBar"></div>
+      </div>
+      <div id="loadingText">0%</div>
+    </div>
+
+    <a-entity id="menu" position="0 0 -3" visible="false">
+      <a-text value="Meniu" align="center" position="0 1 0" color="#FFFFFF"></a-text>
+
+      <a-box id="option1" position="0 0.5 0" rotation="0 0 0" width="1" height="0.5" depth="0.1" color="#D3D3D3" event-set__mouseenter="_event: mouseenter; color: #7BC8A4" event-set__mouseleave="_event: mouseleave; color: #D3D3D3" navigate="page1">
+        <a-text value="Filme noi" align="center" position="0 0 0.06" color="#000000"></a-text>
+      </a-box>
+
+      <a-box id="option2" position="0 0 0" rotation="0 0 0" width="1" height="0.5" depth="0.1" color="#D3D3D3" event-set__mouseenter="_event: mouseenter; color: #7BC8A4" event-set__mouseleave="_event: mouseleave; color: #D3D3D3" event-set__click="_event: click; color: #FF0000" navigate="page1">
+        <a-text value="Vizionare" align="center" position="0 0 0.06" color="#000000"></a-text>
+      </a-box>
+
+      <a-box id="option3" position="0 -0.5 0" rotation="0 0 0" width="1" height="0.5" depth="0.1" color="#D3D3D3" event-set__mouseenter="_event: mouseenter; color: #7BC8A4" event-set__mouseleave="_event: mouseleave; color: #D3D3D3" event-set__click="_event: click; color: #FF0000" navigate="page1">
+        <a-text value="Setari" align="center" position="0 0 0.06" color="#000000"></a-text>
+      </a-box>
+
+      <a-box id="option4" position="0 -1 0" rotation="0 0 0" width="1" height="0.5" depth="0.1" color="#FF0000" event-set__mouseenter="_event: mouseenter; color: #7BC8A4" event-set__mouseleave="_event: mouseleave; color: #FF0000" event-set__click="_event: click; color: #FF0000" navigate="page1">
+        <a-text value="Iesire" align="center" position="0 0 0.06" color="#000000"></a-text>
+      </a-box>
+    </a-entity>
+
+    <a-entity id="page1" visible="false" class="page1-only">
+      <a-sky id="sky" color="#87CEEB" visible="true"></a-sky>
+      <a-plane id="greenFloor" position="0 -2 0" rotation="-89 0 0" width="50" height="50" color="#50C878"></a-plane>
+
+      <a-circle id="redButton" class="fixed-button" position="1.8 1.6 -3" radius="0.2" material="color: red" cursor-listener>
+        <a-text value=":" position="-0.01 0.01 0" color="white" align="center"></a-text>
+      </a-circle>
+
+      <a-circle id="button1" class="top-button" position="-2 1.6 -3" radius="0.2" material="color: #D3D3D3" visible="false">
+        <a-text value="1" position="0 0 0.05" color="black" align="center"></a-text>
+      </a-circle>
+      <a-circle id="button2" class="top-button" position="-1.5 1.6 -3" radius="0.2" material="color: #D3D3D3" visible="false">
+        <a-text value="2" position="0 0 0.05" color="black" align="center"></a-text>
+      </a-circle>
+      <a-circle id="button3" class="top-button" position="-1 1.6 -3" radius="0.2" material="color: #D3D3D3" visible="false">
+        <a-text value="3" position="0 0 0.05" color="black" align="center"></a-text>
+      </a-circle>
+      <a-circle id="button4" class="top-button" position="-0.5 1.6 -3" radius="0.2" material="color: #D3D3D3" visible="false">
+        <a-text value="4" position="0 0 0.05" color="black" align="center"></a-text>
+      </a-circle>
+      <a-circle id="button5" class="top-button" position="0 1.6 -3" radius="0.2" material="color: #D3D3D3" visible="false">
+        <a-text value="5" position="0 0 0.05" color="black" align="center"></a-text>
+      </a-circle>
+
+      <a-plane id="messageBoxVR" position="2 0 -3" width="2" height="1" color="#D3D3D3" visible="false">
+        <a-text value="Chat" position="0.1 0.4 0.1" align="right" color="black"></a-text>
+        <a-text value="Mesaj" position="0.9 0.1 0.1" align="right" color="black" wrap-count="30"></a-text>
+      </a-plane>
+    </a-entity>
+  </a-scene>
+</body>
+</html>
