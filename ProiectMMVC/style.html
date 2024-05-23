@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<head>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+        .pattern {
+
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:space-around; 
+        }
+
+        .hexColor {
+
+            display:flex;
+            flex-direction:column; 
+            align-items:center; 
+            margin:10px;
+        }
+
+        .cerc {
+
+            width:70px;
+            height:70px;
+            background-color:var(--culoare-cerc, blue); 
+            border-radius:50%;
+        }
+
+        .cercBorder {
+
+        width:70px;
+        height:70px;
+        border: 5px solid var(--culoare-cerc, blue);
+        border-radius:50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }   
+
+        .text {
+
+            margin-top:8px; 
+            font-size:18px;
+        }
+
+        .textFont{
+
+            font-family: 'Roboto';
+
+        }
+        .iconsize{
+
+            font-size: 50px;
+            color: #87CEEB;
+        }
+
+    </style>
+
+</head>
+<body>
+    <h2>Paleta de culori:</h2>
+    <div class= "pattern">
+
+        <div class="hexColor">
+
+            <div class="cerc" style="--culoare-cerc: #87CEEB;"></div>
+            <div class="text">#87CEEBF</div>
+        </div>
+
+        <div class="hexColor">
+
+            <div class="cerc" style="--culoare-cerc: #50C878;"></div>
+            <div class="text">#50C878</div>
+        </div>
+
+        <div class="hexColor">
+
+            <div class="cerc" style="--culoare-cerc: #FFFFFF;"></div>
+            <div class="text">#FFFFFF</div>
+        </div>
+
+        <div class="hexColor">
+
+            <div class="cerc" style="--culoare-cerc: #D3D3D3;"></div>
+            <div class="text">#D3D3D3</div>
+        </div>
+
+        <div class="hexColor">
+
+            <div class="cerc" style="--culoare-cerc: #000000;"></div>
+            <div class="text">#000000</div>
+        </div>
+    
+    </div>
+    <h2>Font:Roboto</h2>
+    <p class="textFont">Exemplu static</p>
+
+    <h2>Iconita are o forma rotunda, o nuanta de culoare albastra si un stil regular.</h2>
+    <div class="cercBorder" style="--culoare-cerc: #87CEEB;">
+
+        <i class="fa-solid fa-gear iconsize"></i>
+
+    </div>
+
+
+</body>
+
+</html>
